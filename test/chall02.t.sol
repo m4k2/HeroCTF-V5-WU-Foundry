@@ -20,8 +20,7 @@ contract ContractTest is Test {
     function setUp() public {
         target = hero2302(0x248866861FA9dDF127A606eb41C6461beeDd5986);
         factory = IKwikEFactory(0x3b9061ED9A1dc4160b0EF70f51B94525cD86DAF2);
-        router = IKwikERouter02(0x6ACfbB0d67fc87363333e12A3Bb2cda12ADb1352);
-        
+        router = IKwikERouter02(0x6ACfbB0d67fc87363333e12A3Bb2cda12ADb1352); 
     }
 
     function testExploit() public {
@@ -47,5 +46,6 @@ contract ContractTest is Test {
         console.log("Amount0 in reserve : ",amount00,"addr 0 : ",kpair.token0());
         console.log("Amount1 in reserve : ",amount01,"addr 1 : ",kpair.token1());
 
+        assertLt(amount01,0.5 ether);
     }
 }

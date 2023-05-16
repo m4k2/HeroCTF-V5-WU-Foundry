@@ -1,13 +1,9 @@
 # HeroCTF-V5-WU-Foundry
 Welcome to the narrative of my adventure in the blockchain category of HeroCTF V5 (2023). It was all about Foundry this time. And oh boy, did it make a splash!
 
-All the challenges can be found here : http://blockchain.heroctf.fr:22000/.
+You can found the foundry template used for this CTF : [here](https://github.com/m4k2/foundry-ctf-template).
 
 Fun side note: Foundry is like the superhero sidekick I never knew I needed. It's so powerful that I'm planning to use it for every other CTF. Plus, there's a neat template for CTF that comes along. Sweet deal, right?
-
-To run test : `forge test --match-path test/<XX>.sol -vvv`
-
-To run script : `forge script script/chall0<X>/Exploitoor.s.sol:ExploitScript --fork-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --legacy`
 
 ## Challenge 00 : Oh sh. Here we go again ?
 
@@ -242,13 +238,11 @@ Post-destruction, the statement `assert(getEtherBalance() == totalSupply * TOKEN
 
 Flag : *Hero{S4m3_aS_USU4L_bUT_S3eN_IRL??!}*
 
-## A little stop here top explain important informations for futher challenges
+## A Brief Pause to Clarify Crucial Details for Upcoming Challenges
 
+The subsequent three challenges focus on Decentralized Exchanges (DEXs) that operate similar to Uniswap. Here are some vital resources to understand Uniswap's functioning: [Whiteboard Crypto video](https://www.youtube.com/watch?v=dVJzcFDo498&list=PLHx4UicbtUoYvCvRouZ4XbaDpE7cbCCqo&ab_channel=WhiteboardCrypto) and [official documentation](https://docs.uniswap.org/contracts/v2/concepts/core-concepts/pools). All of these exercises center around a vulnerable ERC20 smart contract. We'll exploit these vulnerabilities to acquire an arbitrary amount of these ERC20 tokens, thereby hacking into a liquidity pool containing our ERC20 token and another ERC20 token: WMEL.
 
-
-The 3 next challenge are DEXs working like uniswap. Here are valuable things to learn of uniswap work : [whiteboard crypto video](https://www.youtube.com/watch?v=dVJzcFDo498&list=PLHx4UicbtUoYvCvRouZ4XbaDpE7cbCCqo&ab_channel=WhiteboardCrypto) and [official docs](https://docs.uniswap.org/contracts/v2/concepts/core-concepts/pools). All of these challenges are about an erc20 vulnerable smart contract, we will use these vulnerability to get arbitrary amount of these erc20 and thus, hacking a liquidity Pool with our token erc20 and another erc20 : WMEL. To goal of these futher challenges are to empty the pool of WMEL token. Initialy there are 20 WMEL and X erc20 vulnerable token, we need to lower the liquidity of WMEL under 0.5 WMEL.
-
-
+The aim of these forthcoming challenges is to drain the pool of WMEL tokens. Initially, the pool contains 20 WMEL tokens and an indeterminate quantity of vulnerable ERC20 tokens. Our task is to reduce the liquidity of WMEL to less than 0.5 WMEL.
 
 ## Challenge 02 : Dive into real life stuff
 
@@ -352,6 +346,7 @@ function approve(uint amount) external returns (bool)
         balanceOf[msg.sender] = amount;
         emit Approval(msg.sender, msg.sender, amount);
         return true;
+}
 ```
 
 Call it, and voila! You've hit the jackpot! You can now drain the entire pool of funds.
