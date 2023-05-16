@@ -262,7 +262,7 @@ contract hero2301 is IERC20, Ownable
     string public symbol = "POPO";
     uint8 public decimals = 18;
 
-    using SafeMath for uint; //@audit-info nothing weird 
+    using SafeMath for uint; 
 
     constructor() {
         balanceOf[msg.sender] = totalSupply;
@@ -307,8 +307,8 @@ contract hero2301 is IERC20, Ownable
         emit Transfer(address(0), msg.sender, amount);
     }
 
-    function burn(uint amount) external { //@audit-info HS cause sub doesn't update the variable
-        balanceOf[msg.sender] = balanceOf[msg.sender].sub(amount); //@audit underflow ? 
+    function burn(uint amount) external { //@audit-info mathlib sub in fact add values
+        balanceOf[msg.sender] = balanceOf[msg.sender].sub(amount);
         totalSupply.sub(amount);
 
         emit Transfer(msg.sender, address(0), amount);

