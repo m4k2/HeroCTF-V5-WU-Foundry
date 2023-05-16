@@ -5,6 +5,10 @@ All the challenges can be found here : http://blockchain.heroctf.fr:22000/.
 
 Fun side note: Foundry is like the superhero sidekick I never knew I needed. It's so powerful that I'm planning to use it for every other CTF. Plus, there's a neat template for CTF that comes along. Sweet deal, right?
 
+To run test : `forge test --match-path test/<XX>.sol -vvv`
+
+To run script : `forge script script/chall0<X>/Exploitoor.s.sol:ExploitScript --fork-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --legacy`
+
 ## Challenge 00 : Oh sh. Here we go again ?
 
 Challenge Briefing: *"This year, we're going to amp it up! Deploy, comprehend, dodge, and verify the contract. Sounds like a piece of cake, right?"*
